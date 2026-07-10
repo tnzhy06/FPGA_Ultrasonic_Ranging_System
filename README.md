@@ -27,7 +27,7 @@ csb/
 
 ## 模块放置约定
 
-- 新增顶层端口和子模块例化放在 `rtl/top/HC_SR04_TOP.v`。
+- 新增顶层端口和子模块例化放在 `rtl/top/ultrasonic_ranging_system_top.v`。
 - 串口收发模块放在 `rtl/uart/`。
 - DS18B20 温度采集与声速补偿模块放在 `rtl/ds18b20/`。
 - LED 距离条模块放在 `rtl/led_bar/`。

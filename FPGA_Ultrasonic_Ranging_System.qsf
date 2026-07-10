@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE6F17C8
-set_global_assignment -name TOP_LEVEL_ENTITY HC_SR04_TOP
+set_global_assignment -name TOP_LEVEL_ENTITY ultrasonic_ranging_system_top
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "22:18:48  SEPTEMBER 08, 2025"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Lite Edition"
@@ -58,7 +58,7 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VERILOG_FILE rtl/ultrasonic/trig_driver.v
 set_global_assignment -name VERILOG_FILE rtl/seg/seg_driver.v
-set_global_assignment -name VERILOG_FILE rtl/top/HC_SR04_TOP.v
+set_global_assignment -name VERILOG_FILE rtl/top/ultrasonic_ranging_system_top.v
 set_global_assignment -name VERILOG_FILE rtl/ultrasonic/echo_driver.v
 set_global_assignment -name VERILOG_FILE rtl/ds18b20/ds18b20_ctrl.v
 set_global_assignment -name VERILOG_FILE rtl/uart/uart_report_tx.v
@@ -67,6 +67,9 @@ set_global_assignment -name VERILOG_FILE rtl/uart/uart_rx.v
 set_global_assignment -name VERILOG_FILE rtl/led_bar/led_bar_driver.v
 set_global_assignment -name VERILOG_FILE rtl/buzzer/radar_buzzer.v
 set_global_assignment -name VERILOG_FILE rtl/common/clk_div.v
+set_global_assignment -name VERILOG_FILE rtl/lcd/lcd_video_pll.v
+set_global_assignment -name VERILOG_FILE rtl/lcd/wave_sample_bridge.v
+set_global_assignment -name VERILOG_FILE rtl/lcd/lcd_wave_display.v
 set_global_assignment -name SDC_FILE constraints/FPGA_Ultrasonic_Ranging_System.sdc
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
 
@@ -99,14 +102,44 @@ set_location_assignment PIN_T13 -to ds18b20_dq
 set_location_assignment PIN_N1 -to uart_tx
 set_location_assignment PIN_M2 -to uart_rx
 
-# AX301 板载 4 个 LED，参考 AX301 官方例程 example_projects/01_led_test
+# AX301 板载 4 个 LED，高电平点亮
 set_location_assignment PIN_E10 -to led[0]
 set_location_assignment PIN_F9 -to led[1]
 set_location_assignment PIN_C9 -to led[2]
 set_location_assignment PIN_D9 -to led[3]
 
-# AX301 板载蜂鸣器，参考 AX301 官方例程 example_projects/07_buzzer_pwm_test，低电平有效
+# AX301 板载蜂鸣器，低电平有效
 set_location_assignment PIN_C11 -to buzzer
+
+# AN430 4.3 英寸 RGB LCD 接口
+set_location_assignment PIN_D5 -to lcd_dclk
+set_location_assignment PIN_D6 -to lcd_de
+set_location_assignment PIN_A13 -to lcd_hs
+set_location_assignment PIN_C6 -to lcd_vs
+set_location_assignment PIN_B1 -to lcd_r[0]
+set_location_assignment PIN_C2 -to lcd_r[1]
+set_location_assignment PIN_B3 -to lcd_r[2]
+set_location_assignment PIN_A2 -to lcd_r[3]
+set_location_assignment PIN_B4 -to lcd_r[4]
+set_location_assignment PIN_A3 -to lcd_r[5]
+set_location_assignment PIN_B5 -to lcd_r[6]
+set_location_assignment PIN_A4 -to lcd_r[7]
+set_location_assignment PIN_B6 -to lcd_g[0]
+set_location_assignment PIN_A5 -to lcd_g[1]
+set_location_assignment PIN_B7 -to lcd_g[2]
+set_location_assignment PIN_A6 -to lcd_g[3]
+set_location_assignment PIN_B8 -to lcd_g[4]
+set_location_assignment PIN_A7 -to lcd_g[5]
+set_location_assignment PIN_B9 -to lcd_g[6]
+set_location_assignment PIN_A8 -to lcd_g[7]
+set_location_assignment PIN_B10 -to lcd_b[0]
+set_location_assignment PIN_A9 -to lcd_b[1]
+set_location_assignment PIN_B11 -to lcd_b[2]
+set_location_assignment PIN_A10 -to lcd_b[3]
+set_location_assignment PIN_B12 -to lcd_b[4]
+set_location_assignment PIN_A11 -to lcd_b[5]
+set_location_assignment PIN_B13 -to lcd_b[6]
+set_location_assignment PIN_A12 -to lcd_b[7]
 
 # AX301全部用户I/O工作在3.3-V LVTTL标准
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
@@ -121,6 +154,34 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to buzzer
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_dclk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_de
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_hs
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_vs
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_r[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_g[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to lcd_b[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sel[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sel[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sel[2]
@@ -145,6 +206,10 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to led[1]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to led[2]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to led[3]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to buzzer
+set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to lcd_dclk
+set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to lcd_de
+set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to lcd_hs
+set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to lcd_vs
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to sel[0]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to sel[1]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to sel[2]
@@ -159,6 +224,9 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to seg[4]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to seg[5]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to seg[6]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to seg[7]
+
+
+
 
 
 
