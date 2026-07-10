@@ -1,0 +1,35 @@
+# Quartus Prime generated files
+**/db/
+**/incremental_db/
+**/output_files/
+*.qws
+*.qdf
+*.jdi
+*.sld
+*.sof
+*.pof
+*.rpt
+*.summary
+*.smsg
+*.done
+*.pin
+
+# ModelSim / simulation generated files
+simulation/
+**/work/
+**/transcript
+*.wlf
+*.vcd
+*.vpd
+*.fst
+*.log
+*.jou
+*.sdo
+*.vo
+*.sft
+*.xrf
+
+# Local editor and agent metadata
+.history/
+.agents/
+.codex/
