@@ -33,3 +33,8 @@ simulation/
 .history/
 .agents/
 .codex/
+
+# Local reference projects and generated project documentation
+# Kept in the working directory but intentionally excluded from Git/GitHub.
+example_projects/
+docs/
