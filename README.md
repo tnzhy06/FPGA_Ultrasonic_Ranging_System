@@ -133,22 +133,6 @@ FPGA_Ultrasonic_Ranging_System/
 
 > 本仓库仅保留可综合的工程源文件、约束和 GitHub 展示文档；板卡学习例程与本地参考资料不包含在仓库中。
 
-## 编译与下载
-
-1. 使用 Quartus Prime 18.1 Lite 打开 `FPGA_Ultrasonic_Ranging_System.qpf`。
-2. 确认目标器件为 `EP4CE6F17C8`，顶层实体为 `ultrasonic_ranging_system_top`。
-3. 执行 **Processing → Start Compilation**。
-4. 通过 USB-Blaster 打开 **Tools → Programmer**，选择编译生成的 `.sof` 文件并下载。
-5. 连接 HC-SR04、DS18B20、串口和 LCD 后，按下复位键即可开始测距。
-
-## 验证状态
-
-所有 RTL 文件已通过 ModelSim - Intel FPGA Edition 编译检查：
-
-```text
-Errors: 0, Warnings: 0
-```
-
 ## 开源说明
 
 本工程用于 FPGA 学习与课程实践。欢迎基于本工程继续扩展，例如加入 UART 命令解析、测距滤波、温度小数显示、波形截图或数据记录功能。
