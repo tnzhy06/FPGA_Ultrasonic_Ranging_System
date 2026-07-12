@@ -127,10 +127,11 @@ FPGA_Ultrasonic_Ranging_System/
 │   ├── buzzer/                             # 蜂鸣器报警
 │   ├── uart/                               # UART 收发与报文发送
 │   └── lcd/                                # PLL、样点桥接与 LCD 波形显示
-└── example_projects/                       # 独立的板卡学习工程
 ```
 
 顶层模块为 [`rtl/top/ultrasonic_ranging_system_top.v`](rtl/top/ultrasonic_ranging_system_top.v)。
+
+> 本仓库仅保留可综合的工程源文件、约束和 GitHub 展示文档；板卡学习例程与本地参考资料不包含在仓库中。
 
 ## 编译与下载
 
